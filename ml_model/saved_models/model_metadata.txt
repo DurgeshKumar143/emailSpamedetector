@@ -1,0 +1,4 @@
+Best Model Name: Logistic Regression
+Best Model Accuracy: 96.59%
+Naive Bayes Accuracy: 96.50%
+Logistic Regression Accuracy: 96.59%

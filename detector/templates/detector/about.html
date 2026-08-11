@@ -1,0 +1,232 @@
+{% extends 'detector/base.html' %}
+
+{% block title %}Learn ML - SpamShield{% endblock %}
+
+{% block content %}
+<div class="row animate-fade-in">
+    <!-- Header -->
+    <div class="col-12 mb-4 text-center text-lg-start">
+        <h1 class="fw-bold text-white mb-2">Machine Learning Guide</h1>
+        <p class="text-muted">A comprehensive curriculum explaining how NLP pipelines and classification models cooperate to detect spam.</p>
+    </div>
+
+    <!-- Main Navigation Tabs -->
+    <div class="col-12">
+        <div class="glass-card p-4">
+            
+            <ul class="nav nav-pills mb-4 d-flex flex-wrap gap-2" id="aboutTab" role="tablist" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem;">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="pipeline-tab" data-bs-toggle="tab" data-bs-target="#pipeline" type="button" role="tab" aria-controls="pipeline" aria-selected="true">
+                        <i class="fa-solid fa-gears me-1"></i> 1. NLP Pipeline
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="models-tab" data-bs-toggle="tab" data-bs-target="#models" type="button" role="tab" aria-controls="models" aria-selected="false">
+                        <i class="fa-solid fa-brain me-1"></i> 2. The Classifiers
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="architecture-tab" data-bs-toggle="tab" data-bs-target="#architecture" type="button" role="tab" aria-controls="architecture" aria-selected="false">
+                        <i class="fa-solid fa-sitemap me-1"></i> 3. System Architecture
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="interview-tab" data-bs-toggle="tab" data-bs-target="#interview" type="button" role="tab" aria-controls="interview" aria-selected="false">
+                        <i class="fa-solid fa-question me-1"></i> 4. Interview Prep
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="improvements-tab" data-bs-toggle="tab" data-bs-target="#improvements" type="button" role="tab" aria-controls="improvements" aria-selected="false">
+                        <i class="fa-solid fa-circle-up me-1"></i> 5. Improvements
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="aboutTabContent">
+                
+                <!-- Tab 1: NLP Preprocessing -->
+                <div class="tab-pane fade show active text-light" id="pipeline" role="tabpanel" aria-labelledby="pipeline-tab">
+                    <h4 class="fw-bold text-primary mb-3">Natural Language Processing (NLP) Pipeline</h4>
+                    <p class="text-muted">Computers cannot understand raw text directly; they only understand numbers. To prepare our email text for training, we pass it through an NLP pipeline that strips noise and transforms it into numerical vectors.</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-4">
+                            <div class="p-3 rounded-3 h-100" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                                <h5 class="fw-bold text-white small text-uppercase tracking-wider text-info"><i class="fa-solid fa-arrow-down-a-z me-2"></i>Step 1: Lowercasing & Cleaning</h5>
+                                <p class="text-muted small mt-2">Convert all letters to lowercase to ensure consistency (so "FREE" and "free" match). We use regex to drop numbers, emojis, and special characters (like <code>$</code>, <code>!</code>, <code>%</code>), leaving only alphabet words.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="p-3 rounded-3 h-100" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                                <h5 class="fw-bold text-white small text-uppercase tracking-wider text-info"><i class="fa-solid fa-scissors me-2"></i>Step 2: Tokenization</h5>
+                                <p class="text-muted small mt-2">Using NLTK's tokenizers, we slice the text string into individual strings of words. For example: <code>"Save money today"</code> becomes a Python list: <code>["save", "money", "today"]</code>.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="p-3 rounded-3 h-100" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                                <h5 class="fw-bold text-white small text-uppercase tracking-wider text-info"><i class="fa-solid fa-ban me-2"></i>Step 3: Stop Words Removal</h5>
+                                <p class="text-muted small mt-2">Stop words (like "the", "is", "at", "which") are highly frequent words in English that carry no discriminative meaning. Removing them keeps only context-heavy words (like "prize", "cash", "lottery").</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="p-3 rounded-3 h-100" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                                <h5 class="fw-bold text-white small text-uppercase tracking-wider text-info"><i class="fa-solid fa-leaf me-2"></i>Step 4: Lemmatization</h5>
+                                <p class="text-muted small mt-2">Reduces words to their core dictionary form (lemma) using linguistic rules. For instance, <code>"running"</code>, <code>"runs"</code>, and <code>"ran"</code> all compress to <code>"run"</code>. This is cleaner than Stemming, which simply truncates endings (e.g. <code>"studying"</code> -> <code>"studi"</code>).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded-3 mt-2" style="background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.15);">
+                        <h5 class="fw-bold text-primary mb-2"><i class="fa-solid fa-calculator me-2"></i>What is TF-IDF?</h5>
+                        <p class="text-muted small mb-0"><strong>TF-IDF</strong> stands for <em>Term Frequency-Inverse Document Frequency</em>. It computes the weight of a word:
+                            <br>1. <strong>Term Frequency (TF)</strong>: How often does the word appear in this message? (High frequency = higher importance).
+                            <br>2. <strong>Inverse Document Frequency (IDF)</strong>: How common is this word across <em>all</em> emails? If a word is in every single message, its IDF drops to zero (because it doesn't help distinguish spam from safe emails).
+                            <br>This converts our text into a sparse table of numeric weights.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tab 2: The Classifiers -->
+                <div class="tab-pane fade text-light" id="models" role="tabpanel" aria-labelledby="models-tab">
+                    <h4 class="fw-bold text-primary mb-3">Model Selection & Comparison</h4>
+                    <p class="text-muted">We trained two algorithms to learn the boundaries between Spam and Ham messages. Here is why they are chosen:</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-4">
+                            <div class="p-4 rounded-3 h-100" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                                <h5 class="fw-bold text-white mb-2"><i class="fa-solid fa-percent me-2 text-warning"></i>Multinomial Naive Bayes</h5>
+                                <p class="text-muted small">Based on **Bayes' Theorem** of conditional probability. It calculates the probability of a message being "Spam" given the words inside it.</p>
+                                <span class="badge bg-dark text-muted p-2 my-2 border border-white border-opacity-10">Bayesian Probability</span>
+                                <ul class="text-muted small ps-3 mt-2">
+                                    <li><strong>Assumption</strong>: Word occurrences are conditionally independent of each other (the "Naive" part).</li>
+                                    <li><strong>Strength</strong>: Extremely fast to train, works very well on text count/frequency matrices, and uses low RAM.</li>
+                                    <li><strong>Weakness</strong>: Ignores word order or phrase context.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="p-4 rounded-3 h-100" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                                <h5 class="fw-bold text-white mb-2"><i class="fa-solid fa-chart-line me-2 text-success"></i>Logistic Regression</h5>
+                                <p class="text-muted small">A classification algorithm that fits a **Sigmoid S-curve** to predict binary label probabilities (values bounded between 0 and 1).</p>
+                                <span class="badge bg-dark text-muted p-2 my-2 border border-white border-opacity-10">Sigmoid Optimization</span>
+                                <ul class="text-muted small ps-3 mt-2">
+                                    <li><strong>Concept</strong>: Learns continuous coefficients for TF-IDF feature variables and transforms linear output using: <code>1 / (1 + e^-z)</code>.</li>
+                                    <li><strong>Strength</strong>: Highly robust, less prone to overfitting on text features, and outputs calibrated class probabilities.</li>
+                                    <li><strong>Weakness</strong>: Struggles to learn non-linear relationships.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: System Architecture -->
+                <div class="tab-pane fade text-light" id="architecture" role="tabpanel" aria-labelledby="architecture-tab">
+                    <h4 class="fw-bold text-primary mb-3">Django & ML Integration Architecture</h4>
+                    <p class="text-muted">How does the web application interact with our saved machine learning binaries?</p>
+                    
+                    <div class="p-4 rounded-3 my-4 text-center font-monospace small" style="background: rgba(0,0,0,0.15); border: 1px solid var(--border-color);">
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-md-3 mb-3 mb-md-0 p-3 rounded bg-dark border border-white border-opacity-10">
+                                <strong>User View</strong><br><span class="text-muted small">Pastes email text in detect.html</span>
+                            </div>
+                            <div class="col-md-1 text-primary">
+                                <i class="fa-solid fa-arrow-right-long fa-2x d-none d-md-block m-auto"></i>
+                                <i class="fa-solid fa-arrow-down-long fa-2x d-block d-md-none m-auto my-2"></i>
+                            </div>
+                            <div class="col-md-3 mb-3 mb-md-0 p-3 rounded bg-dark border border-white border-opacity-10">
+                                <strong>Prediction Service</strong><br><span class="text-muted small">Applies NLTK pipeline</span>
+                            </div>
+                            <div class="col-md-1 text-primary">
+                                <i class="fa-solid fa-arrow-right-long fa-2x d-none d-md-block m-auto"></i>
+                                <i class="fa-solid fa-arrow-down-long fa-2x d-block d-md-none m-auto my-2"></i>
+                            </div>
+                            <div class="col-md-4 p-3 rounded bg-dark border border-white border-opacity-10">
+                                <strong>Saved Models (joblib)</strong><br><span class="text-muted small">Vectorizes & Runs inference using Logistic Regression</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <ul class="text-muted small ps-3">
+                        <li><strong>Dynamic Loading</strong>: The model and TF-IDF vectorizer are loaded from disk only <em>once</em> during Django startup and cached in RAM. This provides rapid predictions and preserves performance.</li>
+                        <li><strong>Database Logging</strong>: Each analysis log is written to the SQLite database (<code>SpamPrediction</code> model) which provides real-time aggregates to update the system dashboard.</li>
+                    </ul>
+                </div>
+
+                <!-- Tab 4: Interview Prep -->
+                <div class="tab-pane fade text-light" id="interview" role="tabpanel" aria-labelledby="interview-tab">
+                    <h4 class="fw-bold text-primary mb-3">Interview Questions & Concept Reviews</h4>
+                    <p class="text-muted">Review these common questions and answers if presenting this project in a technical interview:</p>
+                    
+                    <div class="accordion accordion-flush" id="faqAccordion">
+                        <div class="accordion-item bg-transparent border-bottom border-white border-opacity-5">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-white fw-bold py-3 px-0 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    Q1: Why do we use TF-IDF instead of simple Bag of Words (BoW) count vectorizers?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted small px-0">
+                                    A: Bag of Words (BoW) count vectorizers only count raw word frequencies. A word like "mail" might appear in almost every message, receiving a high value despite not helping to differentiate spam from legitimate emails. **TF-IDF corrects this** by multiplying term counts by their Inverse Document Frequency (IDF), which penalizes words that are common across the entire dataset and boosts unique identifiers (like "won", "lottery", "cash").
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item bg-transparent border-bottom border-white border-opacity-5">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-white fw-bold py-3 px-0 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    Q2: What is "Training-Serving Skew" and how does your project address it?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted small px-0">
+                                    A: **Training-serving skew** occurs when model inputs during inference are preprocessed differently than they were during training, leading to incorrect predictions. We prevent this by importing the exact same function (<code>clean_and_preprocess_text</code>) and the saved <code>tfidf_vectorizer.joblib</code> from training straight into our live Django views.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item bg-transparent border-bottom border-white border-opacity-5">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-white fw-bold py-3 px-0 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    Q3: What are the evaluation metrics for classification, and why is accuracy sometimes misleading?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted small px-0">
+                                    A: In an imbalanced dataset (e.g. 95% Ham and 5% Spam), an algorithm that marks everything as "Ham" will get 95% accuracy despite being completely useless for detecting spam. Hence, we evaluate models using **Precision** (avoiding false positives: block legitimate emails), **Recall** (avoiding false negatives: let spam leak through), and the **F1-Score** (harmonic mean of both).
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item bg-transparent border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-white fw-bold py-3 px-0 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                    Q4: Why does Multinomial Naive Bayes assume word independence, and is this realistic?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted small px-0">
+                                    A: It assumes word probabilities are independent (e.g., seeing "free" does not affect the probability of seeing "lottery"). This assumption is mathematically unrealistic since words in language are heavily correlated, yet the model still performs exceptionally well on text classification datasets because it only needs to rank likelihoods rather than compute absolute probabilities.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 5: Improvements -->
+                <div class="tab-pane fade text-light" id="improvements" role="tabpanel" aria-labelledby="improvements-tab">
+                    <h4 class="fw-bold text-primary mb-3">Future Scaling & Improvements</h4>
+                    <p class="text-muted">How could you improve this system for industrial, real-world deployment?</p>
+                    
+                    <ul class="text-muted small ps-3">
+                        <li class="mb-3"><strong>Deep Learning Models</strong>: Replace TF-IDF + Logistic Regression with sequence models like **LSTM** or pre-trained transformer embeddings like **BERT** to capture semantic contexts and sequence structures in text.</li>
+                        <li class="mb-3"><strong>Background Task Queue</strong>: Instead of running predictions synchronously within the HTTP thread, use task workers like **Celery & Redis** to handle massive volumes asynchronously and prevent request timeouts.</li>
+                        <li class="mb-3"><strong>REST API Interface</strong>: Implement **Django REST Framework (DRF)** to enable third-party email clients or plugins (like Outlook or Gmail Add-ins) to communicate with our model endpoints.</li>
+                        <li class="mb-3"><strong>Feedback Loop</strong>: Add a "Report Correction" button in the frontend. When users report a misclassification, log it to a feedback queue to periodically re-train and fine-tune models.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

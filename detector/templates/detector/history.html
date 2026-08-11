@@ -1,0 +1,124 @@
+{% extends 'detector/base.html' %}
+
+{% block title %}Prediction History - SpamShield{% endblock %}
+
+{% block content %}
+<div class="row animate-fade-in">
+    <!-- Header and Search Filter -->
+    <div class="col-12 mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+        <div>
+            <h1 class="fw-bold text-white mb-2">Prediction Archive</h1>
+            <p class="text-muted mb-3 mb-md-0">Browse through the historical catalog of all analyzed messages.</p>
+        </div>
+        
+        <!-- Search bar -->
+        <div>
+            <form method="GET" action="{% url 'history' %}" class="d-flex gap-2">
+                <div class="input-group" style="min-width: 280px;">
+                    <span class="input-group-text bg-dark border-white border-opacity-10 text-muted">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                    <input type="text" name="search" class="form-control bg-dark border-white border-opacity-10 text-light" placeholder="Search message text..." value="{{ search_query }}">
+                </div>
+                <button type="submit" class="btn btn-glow-primary px-3">Filter</button>
+                {% if search_query %}
+                    <a href="{% url 'history' %}" class="btn btn-glow-secondary px-3"><i class="fa-solid fa-xmark"></i></a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <!-- History Logs Table -->
+    <div class="col-12">
+        <div class="glass-card p-4">
+            {% if page_obj %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" style="background: transparent;">
+                        <thead>
+                            <tr class="text-muted" style="border-bottom: 2px solid rgba(255,255,255,0.05);">
+                                <th scope="col" style="background: transparent; width: 8%;">ID</th>
+                                <th scope="col" style="background: transparent; width: 45%;">Raw Message Content</th>
+                                <th scope="col" style="background: transparent; width: 15%;">Classification</th>
+                                <th scope="col" style="background: transparent; width: 12%;">Confidence</th>
+                                <th scope="col" style="background: transparent; width: 20%;">Date & Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in page_obj %}
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td class="text-muted fw-bold" style="background: transparent;">#{{ record.id }}</td>
+                                    <td class="text-light" style="background: transparent;">
+                                        <div class="text-break" style="max-height: 80px; overflow-y: auto; white-space: pre-wrap;">{{ record.email_text }}</div>
+                                    </td>
+                                    <td style="background: transparent;">
+                                        {% if record.prediction_label == 'Spam' %}
+                                            <span class="badge bg-danger bg-opacity-25 text-danger px-3 py-2" style="border: 1px solid rgba(248, 113, 113, 0.3); border-radius: 6px;">Spam</span>
+                                        {% else %}
+                                            <span class="badge bg-success bg-opacity-25 text-success px-3 py-2" style="border: 1px solid rgba(74, 222, 128, 0.3); border-radius: 6px;">Safe</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-light fw-semibold" style="background: transparent;">{{ record.confidence }}%</td>
+                                    <td class="text-muted small" style="background: transparent;">{{ record.created_at|date:"Y-m-d H:i:s" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Custom styled Pagination Controls -->
+                {% if page_obj.has_other_pages %}
+                    <nav class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top border-white border-opacity-5">
+                        <span class="text-muted small">
+                            Showing page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+                        <ul class="pagination pagination-dark mb-0">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link bg-dark border-white border-opacity-10 text-light" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link bg-transparent border-white border-opacity-10 text-secondary">&laquo;</span>
+                                </li>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <li class="page-item active"><span class="page-link bg-primary border-primary text-dark fw-bold">{{ num }}</span></li>
+                                {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                                    <li class="page-item"><a class="page-link bg-dark border-white border-opacity-10 text-light" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link bg-dark border-white border-opacity-10 text-light" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link bg-transparent border-white border-opacity-10 text-secondary">&raquo;</span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <div class="text-center py-5 my-3 text-muted">
+                    <i class="fa-solid fa-inbox fa-3x mb-3 text-secondary d-block"></i>
+                    {% if search_query %}
+                        No results match your search term: "<strong>{{ search_query }}</strong>"
+                        <a href="{% url 'history' %}" class="text-primary text-decoration-none d-block mt-2">Clear search filters</a>
+                    {% else %}
+                        No records logged in history yet. Paste in text to analyze it first!
+                        <a href="{% url 'detect' %}" class="text-primary text-decoration-none d-block mt-2"><strong>Run Spam Detector <i class="fa-solid fa-arrow-right ms-1"></i></strong></a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

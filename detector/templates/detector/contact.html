@@ -1,0 +1,101 @@
+{% extends 'detector/base.html' %}
+
+{% block title %}Contact - SpamShield{% endblock %}
+
+{% block content %}
+<div class="row animate-fade-in">
+    <!-- Header -->
+    <div class="col-12 mb-4 text-center text-lg-start">
+        <h1 class="fw-bold text-white mb-2">Get in Touch</h1>
+        <p class="text-muted">Have suggestions, feedback, or want to deploy this system in your organization? Drop us a line.</p>
+    </div>
+
+    <!-- Contact Form Card -->
+    <div class="col-lg-7 mb-4">
+        <div class="glass-card p-4">
+            <h5 class="fw-bold text-white mb-4"><i class="fa-solid fa-envelope me-2 text-primary"></i>Send a Message</h5>
+            
+            <form method="POST" action="{% url 'contact' %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label text-muted small">Your Name</label>
+                        {{ form.name.errors }}
+                        {{ form.name }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label text-muted small">Email Address</label>
+                        {{ form.email.errors }}
+                        {{ form.email }}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.subject.id_for_label }}" class="form-label text-muted small">Subject</label>
+                    {{ form.subject.errors }}
+                    {{ form.subject }}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="{{ form.message.id_for_label }}" class="form-label text-muted small">Message</label>
+                    {{ form.message.errors }}
+                    {{ form.message }}
+                </div>
+                
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-glow-primary py-3">
+                        <i class="fa-solid fa-paper-plane me-2"></i>Send Message
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Contact Info Card -->
+    <div class="col-lg-5 mb-4">
+        <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-address-card me-2 text-primary"></i>Project Information</h5>
+                <p class="text-muted small">This is a fully integrated Django + Machine Learning web application designed to demonstrate NLP text processing and binary classifiers.</p>
+                
+                <div class="mt-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary bg-opacity-10 p-2 rounded-3 text-primary me-3" style="width: 40px; text-align: center;">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <div>
+                            <span class="d-block text-white fw-semibold small">Tech Stack</span>
+                            <span class="text-muted small">Python, Django, Scikit-learn, SQLite, Bootstrap 5</span>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-success bg-opacity-10 p-2 rounded-3 text-success me-3" style="width: 40px; text-align: center;">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div>
+                            <span class="d-block text-white fw-semibold small">Contact Developer</span>
+                            <span class="text-muted small">support@spamshield-ai.local</span>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-info bg-opacity-10 p-2 rounded-3 text-info me-3" style="width: 40px; text-align: center;">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div>
+                            <span class="d-block text-white fw-semibold small">Location</span>
+                            <span class="text-muted small">Academic / Research lab environment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-3 rounded-3 mt-4" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                <span class="text-white small fw-bold d-block"><i class="fa-solid fa-shield-halved me-1 text-primary"></i> SpamShield Edu</span>
+                <span class="text-muted small">Use this application to explain classification modeling, confusion matrix, TF-IDF weights, and Django's integration service.</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,194 @@
+{% extends 'detector/base.html' %}
+
+{% block title %}Dashboard - SpamShield{% endblock %}
+
+{% block content %}
+<div class="row animate-fade-in">
+    <!-- Header -->
+    <div class="col-12 mb-4 text-center text-lg-start">
+        <h1 class="fw-bold text-white mb-2">System Dashboard</h1>
+        <p class="text-muted">Real-time statistics of the AI Spam Detection service and active ML model.</p>
+    </div>
+
+    <!-- Metric Cards -->
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted fw-medium small text-uppercase">Total Scanned</span>
+                    <div class="bg-primary bg-opacity-10 p-2 rounded-3 text-primary">
+                        <i class="fa-solid fa-calculator fa-lg"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bold text-white mb-1">{{ total_scans }}</h2>
+            </div>
+            <div class="text-muted small mt-2">
+                All-time historical scans log
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted fw-medium small text-uppercase">Spam Messages</span>
+                    <div class="bg-danger bg-opacity-10 p-2 rounded-3 text-danger">
+                        <i class="fa-solid fa-circle-exclamation fa-lg"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bold text-white mb-1">{{ spam_count }}</h2>
+            </div>
+            <div class="text-muted small mt-2">
+                <span class="text-danger fw-bold"><i class="fa-solid fa-arrow-right me-1"></i>{{ spam_pct }}%</span> of scanned messages
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted fw-medium small text-uppercase">Safe (Ham)</span>
+                    <div class="bg-success bg-opacity-10 p-2 rounded-3 text-success">
+                        <i class="fa-solid fa-circle-check fa-lg"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bold text-white mb-1">{{ ham_count }}</h2>
+            </div>
+            <div class="text-muted small mt-2">
+                <span class="text-success fw-bold"><i class="fa-solid fa-arrow-right me-1"></i>{{ ham_pct }}%</span> of scanned messages
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted fw-medium small text-uppercase">Avg ML Confidence</span>
+                    <div class="bg-info bg-opacity-10 p-2 rounded-3 text-info">
+                        <i class="fa-solid fa-gauge-high fa-lg"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bold text-white mb-1">{{ avg_confidence }}%</h2>
+            </div>
+            <div class="text-muted small mt-2">
+                Model confidence indicator score
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-2 animate-fade-in" style="animation-delay: 0.15s;">
+    <!-- Distribution Progress Bar -->
+    <div class="col-lg-8 mb-4">
+        <div class="glass-card p-4 h-100">
+            <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-chart-pie me-2 text-primary"></i>Message Distribution</h5>
+            <p class="text-muted small">Visual ratio representing classification logs within the database.</p>
+            
+            {% if total_scans > 0 %}
+                <div class="progress mb-4" style="height: 25px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); overflow: hidden;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ ham_pct }}%" aria-valuenow="{{ ham_pct }}" aria-valuemin="0" aria-valuemax="100">
+                        Safe ({{ ham_pct }}%)
+                    </div>
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ spam_pct }}%" aria-valuenow="{{ spam_pct }}" aria-valuemin="0" aria-valuemax="100">
+                        Spam ({{ spam_pct }}%)
+                    </div>
+                </div>
+                
+                <div class="row text-center mt-3">
+                    <div class="col-6 border-end border-white border-opacity-10">
+                        <h4 class="fw-bold text-success mb-0">{{ ham_count }}</h4>
+                        <span class="text-muted small">Ham Messages</span>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="fw-bold text-danger mb-0">{{ spam_count }}</h4>
+                        <span class="text-muted small">Spam Messages</span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-secondary bg-transparent border-white border-opacity-10 text-muted text-center py-5 my-3" style="border-radius: 12px;">
+                    <i class="fa-regular fa-folder-open fa-2x mb-3 d-block text-secondary"></i>
+                    No prediction log entries found in the database. 
+                    <a href="{% url 'detect' %}" class="text-primary text-decoration-none d-block mt-2"><strong>Run your first scan now <i class="fa-solid fa-arrow-right ms-1"></i></strong></a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Quick Navigation Actions -->
+    <div class="col-lg-4 mb-4">
+        <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-bolt me-2 text-primary"></i>Quick Actions</h5>
+                <p class="text-muted small">Trigger real-time machine learning predictions or inspect backend algorithms.</p>
+            </div>
+            
+            <div class="d-grid gap-3 my-3">
+                <a href="{% url 'detect' %}" class="btn btn-glow-primary py-3">
+                    <i class="fa-solid fa-magnifying-glass me-2"></i>Scan Email Message
+                </a>
+                <a href="{% url 'about' %}" class="btn btn-glow-secondary py-3">
+                    <i class="fa-solid fa-book-open-reader me-2"></i>ML Training Details
+                </a>
+            </div>
+            
+            <div class="text-muted text-center small mt-2">
+                Active Classifier: <span class="badge bg-secondary">Logistic Regression</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Predictions Table -->
+<div class="row mt-2 animate-fade-in" style="animation-delay: 0.3s;">
+    <div class="col-12 mb-4">
+        <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-white mb-0"><i class="fa-solid fa-list-check me-2 text-primary"></i>Recent Prediction Logs</h5>
+                <a href="{% url 'history' %}" class="text-decoration-none text-primary small fw-semibold">View Full History <i class="fa-solid fa-chevron-right ms-1"></i></a>
+            </div>
+            
+            {% if recent_predictions %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" style="background: transparent;">
+                        <thead>
+                            <tr class="text-muted" style="border-bottom: 2px solid rgba(255,255,255,0.05);">
+                                <th scope="col" style="background: transparent;">ID</th>
+                                <th scope="col" style="background: transparent;">Snippet</th>
+                                <th scope="col" style="background: transparent;">Result</th>
+                                <th scope="col" style="background: transparent;">Confidence</th>
+                                <th scope="col" style="background: transparent;">Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pred in recent_predictions %}
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td class="text-muted fw-bold" style="background: transparent;">#{{ pred.id }}</td>
+                                    <td class="text-light" style="background: transparent;">
+                                        <div class="text-truncate" style="max-width: 350px;">{{ pred.email_text }}</div>
+                                    </td>
+                                    <td style="background: transparent;">
+                                        {% if pred.prediction_label == 'Spam' %}
+                                            <span class="badge bg-danger bg-opacity-25 text-danger px-3 py-2" style="border: 1px solid rgba(248, 113, 113, 0.3); border-radius: 6px;">Spam</span>
+                                        {% else %}
+                                            <span class="badge bg-success bg-opacity-25 text-success px-3 py-2" style="border: 1px solid rgba(74, 222, 128, 0.3); border-radius: 6px;">Safe</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-light fw-semibold" style="background: transparent;">{{ pred.confidence }}%</td>
+                                    <td class="text-muted small" style="background: transparent;">{{ pred.created_at|date:"Y-m-d H:i" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-4 text-muted small">
+                    No recent predictions logged.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
